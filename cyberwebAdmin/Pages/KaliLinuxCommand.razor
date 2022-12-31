@@ -1,0 +1,57 @@
+﻿@page "/kalilinuxcommand"
+@attribute [Authorize(Roles = "Administrator")]
+@using cyberwebAdmin.Data
+@using ClassLibraryDAL
+@using ClassLibraryModel
+<h3>KaliLinuxCommand</h3>
+<EditForm Model="SaveKLCD" OnSubmit="SaveKLCD">
+    <input type="text" placeholder="Command" @bind-value="KLC.KaliLinuxCommand" />
+    <input type="text" placeholder="Purpose" @bind-value="KLC.Purpose" /><br><br>
+    <button type="submit">Save</button><br><br>
+</EditForm>
+<table class="table">
+    .
+
+    <thead>
+        <tr>
+            <th>KaliCommands</th>
+            <th>Purpose</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    @foreach (var item in KLCD)
+    {
+        <tr>
+            <td>@item.KaliLinuxCommand</td>
+            <td>@item.Purpose</td>
+            <td><button class="btn btn-outline-danger btn-sm" @onclick="(()=>DeleteYTL(item.Id))">Delete</button></td>
+        </tr>
+    }
+</table>
+@code {
+    private List<KaliLinuxCommandModel> KLCD { get; set; } = new List<KaliLinuxCommandModel>();
+    protected override void OnInitialized()
+    {
+        LoadKLCD();
+    }
+    private void LoadKLCD()
+    {
+        KLCD = KaliLinuxCommandDAL.GetKLC();
+    }
+    private KaliLinuxCommandModel KLC { get; set; } = new KaliLinuxCommandModel();
+    private void SaveKLCD()
+    {
+        KaliLinuxCommandDAL.SaveKLC(KLC);
+        KLC = new KaliLinuxCommandModel();
+        LoadKLCD();
+
+    }
+    private void DeleteYTL(int id)
+    {
+        int i = KaliLinuxCommandDAL.DeleteKLC(id);
+        if (i == 1)
+        {
+            LoadKLCD();
+        }
+    }
+}

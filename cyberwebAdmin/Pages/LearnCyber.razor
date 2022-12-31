@@ -1,0 +1,51 @@
+﻿
+@page "/learncyber"
+@using ClassLibraryDAL
+@using ClassLibraryModel
+
+<h3>LearnCyber</h3>
+
+<br />
+<EditForm Model=" SaveYTLD" OnSubmit="SaveYTLD">
+    <input type="text" placeholder="Name" @bind-value="YT.Name" />
+    <input type="text" placeholder="Link" @bind-value="YT.YoutubeLink" /><br><br>
+    <button type="submit">Save</button><br><br>
+    <p>------------------------------------------------------------------------</p>
+</EditForm>
+<br />
+<li>
+    @foreach (var item in YTL)
+    {
+        <ul>@item.Name</ul>
+        <ul><embed style="width:720px:height:420px" src=@item.YoutubeLink></ul>
+        <ul><button class="btn btn-outline-danger btn-sm" @onclick="(()=>DeleteYTL(item.Id))">Delete</button></ul>
+        <ul>-------------------------------------------------------------------------------</ul>
+    }
+</li>
+@code {
+    private List<YoutubeLinkModel> YTL { get; set; } = new List<YoutubeLinkModel>();
+    protected override void OnInitialized()
+    {
+        LoadYTL();
+    }
+    private void LoadYTL()
+    {
+        YTL = YoutubeLinkDAL.GetYTL();
+    }
+    private void DeleteYTL(int id)
+    {
+        int i = YoutubeLinkDAL.DeleteYTL(id);
+        if (i == 1)
+        {
+            LoadYTL();
+        }
+    }
+    private YoutubeLinkModel YT { get; set; } = new YoutubeLinkModel();
+    private void SaveYTLD()
+    {
+        YoutubeLinkDAL.SaveYTL(YT);
+        YT = new YoutubeLinkModel();
+        LoadYTL();
+
+    }
+}
